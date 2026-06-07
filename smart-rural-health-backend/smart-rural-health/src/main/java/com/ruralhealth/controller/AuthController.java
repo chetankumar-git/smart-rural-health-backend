@@ -58,17 +58,13 @@ public class AuthController {
     // ── Login ─────────────────────────────────────────────────────
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(req.getMobile(), req.getPassword())
-            );
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "Invalid mobile or password"));
-        }
+User user = userRepository.findByMobile(req.getMobile())
+        .orElseThrow(() -> new RuntimeException("User not found"));
 
-        User user = userRepository.findByMobile(req.getMobile())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(Map.of("error", "Invalid mobile or password"));
+}
 
         String token = jwtUtil.generateToken(user.getMobile(), user.getRole().name());
 

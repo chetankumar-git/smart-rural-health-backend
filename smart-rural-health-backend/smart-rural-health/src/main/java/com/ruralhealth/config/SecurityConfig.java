@@ -36,9 +36,12 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/doctors/nearby").permitAll()
-                .requestMatchers("/api/doctors/search").permitAll()
+           .requestMatchers("/").permitAll()
+.requestMatchers("/health").permitAll()
+.requestMatchers("/api/auth/**").permitAll()
+.requestMatchers("/api/doctors/nearby").permitAll()
+.requestMatchers("/api/doctors/search").permitAll()
+.requestMatchers("/api/symptoms/**").permitAll()
                 // Role-based endpoints
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
